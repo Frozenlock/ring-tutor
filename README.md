@@ -11,7 +11,7 @@ the correct URI.
 
 ## Usage
 
-Add `[org.clojars.frozenlock/ring-tutor "0.1.0"]` to your `project.clj` dependencies.
+Add `[org.clojars.frozenlock/ring-tutor "0.1.1"]` to your `project.clj` dependencies.
 
 This library also requires the *ring.middleware.session* middleware to be used in your ring-app.
 
