@@ -2,6 +2,9 @@
 
 Ring middleware to add tutorials to your ring websites.
 
+Automatically discards completed steps and makes sure the user is at
+the correct URI.
+
 <img src="https://raw.githubusercontent.com/Frozenlock/ring-tutor/master/350px-Johannes_Kepler_1610.jpg"
  alt="Johannes Kepler" title="Johannes Kepler"/>
 
@@ -60,7 +63,6 @@ Any updates to the `tutor` state must be done with the ring *response*.
     (-> (resp/redirect "/")
         (tutor/set-tutor-sequence nil))) ;; this clears the tutorial
 ```
-
 
 
 To get access to the generated content in your webpages, use the
