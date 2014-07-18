@@ -12,7 +12,7 @@
   "Is there any tutor steps available?" [request]
   (not-empty (get-in request [:session ::ring-tutor :steps])))
 
-(defn- current-step
+(defn current-step
   "Return the current tutor step."
   [request]
   (-> (get-in request [:session ::ring-tutor :steps])
