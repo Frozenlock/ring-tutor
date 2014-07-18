@@ -61,9 +61,9 @@
   "Update the tutor session (if needed) and return the updated request."
   [request]
   (cond
-   (match-current-step? request) (assoc-in request [:session ::ring-tutor :generated]
+   (match-current-step? request) (assoc-in request [::ring-tutor :generated]
                                            ((:step-fn (current-step request)) request))
-   :else (assoc-in request [:session ::ring-tutor :generated]
+   :else (assoc-in request [::ring-tutor :generated]
                    ((wrong-uri-fn request) request))))
 
 (defn- drop-current-step
@@ -77,7 +77,7 @@
 (defn generated-tutor
   "Get the generated tutor step from the request (if any)."
   [request]
-  (get-in request [:session ::ring-tutor :generated]))
+  (get-in request [::ring-tutor :generated]))
 
 (defn set-tutor-sequence
   "Return a new response with the tutor sequence added to the user's
@@ -94,16 +94,22 @@
 
 (defn wrap-tutor [handler]
   (fn [request]
-    (if (tutor-active? request)            
-      (let [current-tutor-state (get-in request [:session ::ring-tutor])
-            match? (match-current-step? request) ; does the URI match? (must be checked in the request)
-            ;; generate the consumable for the handler
-            response (-> request
-                         (update-tutor)
-                         (handler))]
-        ;; now we update the tutor state as needed
-        (if match?
-          (assoc-in response [:session ::ring-tutor]
-                    (drop-current-step current-tutor-state))
-          response))
-      (handler request)))) ; if we don't have a tutor-state, just evaluate as usual
+    (let [session-state (get request :session)
+          raw-response
+          (if (tutor-active? request)
+            (let [current-tutor-state (get-in request [:session ::ring-tutor])
+                  match? (match-current-step? request) ; does the URI match? (must be checked in the request)
+                  ;; generate the consumable for the handler
+                  response (-> request
+                               (update-tutor)
+                               (handler))]
+              ;; now we update the tutor state as needed
+              (if match?
+                (-> response
+                    (assoc :session (merge session-state (:session response)))
+                    (assoc-in [:session ::ring-tutor]
+                              (drop-current-step current-tutor-state)))
+                response))
+            (handler request))] ; if we don't have a tutor-state, just evaluate as usual
+      ;; now, check if we need to update the session by a change of steps in the response
+      (assoc raw-response :session (merge session-state (:session raw-response))))))

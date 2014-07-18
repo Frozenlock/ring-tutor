@@ -1,4 +1,4 @@
-(defproject org.clojars.frozenlock/ring-tutor "0.1.1"
+(defproject org.clojars.frozenlock/ring-tutor "0.1.2"
   :description "Ring middleware to add tutorials to your ring websites."
   ;:url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.6.0"]
