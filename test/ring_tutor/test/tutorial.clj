@@ -1,4 +1,4 @@
-(ns ring-tutor.test.handler
+(ns ring-tutor.test.tutorial
   (:use [kerodon.core]
         [kerodon.test]
         [clojure.test])
